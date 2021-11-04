@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if ! [[ "$OSTYPE" == "darwin"* ]]; then
+    echo "isarm only supports macOS."
+    exit 1
+fi
+
+if [ -z "$1" ]
+  then
+    result_read="defaults read com.apple.finder CreateDesktop"
+    if $result_read | grep -q "true"; then
+        defaults write com.apple.finder CreateDesktop false
+        killall Finder
+        echo "Desktop icons are hidden!"
+        exit 0
+    elif $result_read | grep -q "false"; then
+        defaults write com.apple.finder CreateDesktop true
+        killall Finder
+        echo "Desktop icons are shown!"
+        exit 0
+    fi
+fi
+
+case "$1" in
+    --help|-h) echo "Display or hide the desktop icons from the command line."; exit 0
+    ;;
+    --version|-v) echo "Version 0.0.1"; exit 0
+    ;;
+esac
